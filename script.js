@@ -35,6 +35,9 @@ const reset = () => {
     tempStr = '';
     dTopStr = '';
     tempNum = '';
+    resultDec = false;
+    toggleResDec = false;
+    topDec = '';
     dBottom.textContent = '';
     dTop.textContent = '';
 }
