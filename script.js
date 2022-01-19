@@ -1,7 +1,3 @@
-// let num1 = undefined;
-// let num2 = undefined;
-// let oper = undefined;
-// let result = undefined;
 let num1, num2, oper, result;
 let multi = false;
 const dTop = document.querySelector('#dTop');
@@ -15,8 +11,11 @@ const updateNums = (x) => {
     console.log(tempNum)
     dTopStr = tempStr.concat(' ', tempNum);
     dTop.textContent = dTopStr;
+    console.log(num1)
+    console.log(num2)
     if (multi = true) {
         num2 = tempNum;
+        console.log(num1)
         console.log(num2)
         dTopStr = tempStr.concat(' ', num2);
         dTop.textContent = dTopStr;
@@ -43,10 +42,28 @@ const reset = () => {
     dTop.textContent = '';
 }
 
-const add = (x, y) => x + y;
-const subtract = (x, y) => x - y;
-const multiply = (x, y) => x * y;
-const divide = (x, y) => x / y;
+const addDecimal = () => {
+    if (num1 === undefined) {
+
+    }
+}
+
+
+
+
+
+
+const round3 = (t) => Number(Math.round((t) + 'e3') + 'e-3');
+const add = (x, y) => round3(x + y);
+const subtract = (x, y) => round3(x - y);
+const multiply = (x, y) => round3(x * y);
+const divide = (x, y) => round3(x / y);
+const infinity = () => {
+    result = 'BOZO'
+    setTimeout(() => {
+        reset()
+    }, 2000);
+}
 
 function operate() {
     console.log(num1)
@@ -54,8 +71,8 @@ function operate() {
     if (!(num1)) {
         num1 = 0;
     }
-    let x = parseInt(num1);
-    let y = parseInt(num2);
+    let x = Number(num1);
+    let y = Number(num2);
     console.log(x)
     switch (oper) {
         case '+':
@@ -73,10 +90,7 @@ function operate() {
             break;
         case '/':
             if (y === 0) {
-                result = 'BOZO'
-                setTimeout(() => {
-                    reset()
-                }, 2000);
+                infinity();
             } else {
                 result = divide(x, y);
                 tempNum = '';
@@ -120,3 +134,6 @@ for (i of operators) {
 
 const clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => reset());
+
+const decBtn = document.querySelector('.decimal');
+clearBtn.addEventListener('click', () => addDecimal());
