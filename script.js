@@ -1,34 +1,31 @@
 let num1, num2, oper, result;
-let multi = false;
+// let multi = false;
 const dTop = document.querySelector('#dTop');
 const dBottom = document.querySelector('#dBottom');
 let tempStr = '';
 let dTopStr = '';
 let tempNum = '';
+let resultDec = false;
+let toggleResDec = false;
+let topDec = '';
 
 const updateNums = (x) => {
-    tempNum += x;
-    console.log(tempNum)
-    dTopStr = tempStr.concat(' ', tempNum);
-    dTop.textContent = dTopStr;
-    console.log(num1)
-    console.log(num2)
-    if (multi = true) {
+    if (resultDec === true) {
+        topDec += x;
+        result += x;
+        dBottom.textContent = result;
+        dTopStr = tempStr.concat(` ${num2}.${topDec}`);
+        dTop.textContent = dTopStr;
+        x = '';
+    }
+    if (resultDec === false) {
+        tempNum += x;
         num2 = tempNum;
-        console.log(num1)
-        console.log(num2)
         dTopStr = tempStr.concat(' ', num2);
         dTop.textContent = dTopStr;
-
     }
 }
 
-const updateOper = (str) => {
-    if (oper === undefined) {
-        oper = str;
-    }
-    console.log(oper)
-}
 
 const reset = () => {
     num1 = undefined;
@@ -43,15 +40,25 @@ const reset = () => {
 }
 
 const addDecimal = () => {
-    if (num1 === undefined) {
-
+    let str = '';
+    if (num1 === undefined && num2 === undefined) {
+        tempNum = str.concat('', '.');
+        dTopStr = tempStr.concat(' ', tempNum);
+        dTop.textContent = dTopStr;
+    }
+    if (num2 !== undefined) {
+        if (toggleResDec === false) {
+            tempNum = str.concat(num2, '.');
+            dTopStr = tempStr.concat(' ', tempNum);
+            dTop.textContent = dTopStr;
+        }
+        if (toggleResDec === true) {
+            result = str.concat(result, '.');
+            dBottom.textContent = result;
+            resultDec = true;
+        }
     }
 }
-
-
-
-
-
 
 const round3 = (t) => Number(Math.round((t) + 'e3') + 'e-3');
 const add = (x, y) => round3(x + y);
@@ -66,14 +73,11 @@ const infinity = () => {
 }
 
 function operate() {
-    console.log(num1)
-    console.log(num2)
     if (!(num1)) {
         num1 = 0;
     }
     let x = Number(num1);
     let y = Number(num2);
-    console.log(x)
     switch (oper) {
         case '+':
             result = add(x, y);
@@ -81,7 +85,6 @@ function operate() {
             break;
         case '-':
             result = subtract(x, y);
-            console.log(result)
             tempNum = '';
             break;
         case '*':
@@ -94,9 +97,9 @@ function operate() {
             } else {
                 result = divide(x, y);
                 tempNum = '';
-                // break;
             }
     }
+    toggleResDec = false;
     oper = undefined;
     num1 = result;
     dBottom.textContent = result;
@@ -113,17 +116,17 @@ for (i of digits) {
 const operators = document.querySelectorAll('.operators');
 for (i of operators) {
     i.addEventListener('click', (e) => {
+        resultDec = false;
         if (e.target.id === '=') {
             operate();
+            toggleResDec = true;
         }
         if (e.target.id !== '=') {
-            if (num2 !== undefined) {
-                operate();
-            }
-            updateOper(e.target.id);
+            operate();
+            // }
+            oper = e.target.id
             tempStr = dTopStr.concat(' ', e.target.id);
             dTop.textContent = tempStr;
-            multi = true;
             if (result === undefined) {
                 num1 = tempNum;
                 tempNum = '';
@@ -136,4 +139,16 @@ const clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => reset());
 
 const decBtn = document.querySelector('.decimal');
-clearBtn.addEventListener('click', () => addDecimal());
+decBtn.addEventListener('click', () => {
+    if (num2 === undefined) {
+        addDecimal();
+    }
+    if (num2 !== undefined) {
+        if (num2.includes('.') === false && toggleResDec === false) {
+            addDecimal();
+        }
+        if (String(result).includes('.') === false && toggleResDec === true) {
+            addDecimal();
+        }
+    }
+});
