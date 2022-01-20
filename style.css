@@ -90,3 +90,7 @@ button:hover {
 #large button {
     width: 180px;
 }
+
+.small-b-text {
+    font-size: 2.5rem;
+}
