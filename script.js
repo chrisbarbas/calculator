@@ -40,23 +40,20 @@ const addDecimal = () => {
     let str = '';
     if (num1 === undefined && num2 === undefined) { //at start
         console.log('magenta')
-        tempNum = str.concat('', '.');
-        dTopStr = tempStr.concat(' ', tempNum);
-        dTop.textContent = dTopStr;
+        tempNum = ('.');
+        updateTopRow(tempNum);
     }
     if (num2 !== undefined) {
         if (toggleResult === false) {
             if (tempNum !== '') { //most numbers
                 console.log('teal3')
                 tempNum = str.concat(num2, '.');
-                dTopStr = tempStr.concat(' ', tempNum);
-                dTop.textContent = dTopStr;
+                updateTopRow(tempNum);
             }
             if (tempNum === '') { //if number begins with a decimal, .8
                 console.log('teal')
-                tempNum = str.concat('.');
-                dTopStr = tempStr.concat(' ', tempNum);
-                dTop.textContent = dTopStr;
+                tempNum = ('.');
+                updateTopRow(tempNum);
             }
         }
         if (toggleResult === true) { //result
@@ -67,25 +64,17 @@ const addDecimal = () => {
 }
 //triggers on signBtn eventListener
 const sign = () => {
-    let str = '';
-    if (num1 === undefined && num2 === undefined) { //if at start
-        tempNum = `-`;
-        dTopStr = str.concat(' ', '-');
-        dTop.textContent = dTopStr;
-    }
     if (toggleResult === false) {
-        if (num2 !== undefined) { //top row if no new digit entered
-            if (tempNum === '') {
-                tempNum = `-`;
-                dTopStr = tempStr.concat(' ', '-');
-                dTop.textContent = dTopStr;
-                console.log('green1')
-            } else { //top row if digit already entered
-                tempNum *= -1;
-                dTopStr = tempStr.concat(' ', tempNum);
-                dTop.textContent = dTopStr;
-                console.log('green2')
-            }
+        if (tempNum === '') { //before unkown number
+            tempNum = `-`;
+            updateTopRow(tempNum);
+        } else if (tempNum === '-') { //to stop infinite negative signs
+            tempNum = '';
+            updateTopRow(tempNum);
+
+        } else { //top row if digit already entered
+            tempNum *= -1;
+            updateTopRow(tempNum);
         }
     }
     if (toggleResult === true) { //bottom row
@@ -98,26 +87,24 @@ const updateNums = (x) => {
     if (toggleResult === false) { //most numbers
         tempNum += x;
         num2 = tempNum;
-        dTopStr = tempStr.concat(' ', num2);
-        dTop.textContent = dTopStr;
+        updateTopRow(num2);
         console.log('blue')
     }
     if (toggleResult === true) { //result
         result += x;
         topDec += x;
         dBottom.textContent = result;
-        dTopStr = tempStr.concat(` ${num2} + .${topDec}`);
-        dTop.textContent = dTopStr;
+        updateTopRow(` ${num2} + .${topDec}`)
         x = '';
-        console.log('green')
+        console.log('green');
     }
     minusAsNegative = 0;
 }
 
 function operate() {
-    console.log(num1)
-    console.log(num2)
-    console.log(tempNum)
+    console.log(num1);
+    console.log(num2);
+    console.log(tempNum);
     if (!(num1)) {
         num1 = 0;
     }
@@ -163,20 +150,18 @@ const operators = document.querySelectorAll('.operators');
 for (i of operators) {
     i.addEventListener('click', (e) => {
         checkStrLength();
-        if (e.target.id === '=') { // =
+        if (e.target.id === '=') { // equals sign
             operate();
             toggleResult = true; // toggles false after operate()
         }
-        if (e.target.id !== '=') { // + - * / 
+        if (e.target.id !== '=') { // other 4 operators 
             minusAsNegative++;
             if (minusAsNegative === 2 && e.target.id === '-') {
-                tempNum = '-';
-                dTopStr = tempStr.concat(' ', tempNum);
-                dTop.textContent = dTopStr;
+                sign();
                 --minusAsNegative;
             } else {
                 operate();
-                oper = e.target.id
+                oper = e.target.id;
                 tempStr = dTopStr.concat(' ', e.target.id);
                 dTop.textContent = tempStr;
                 if (result === undefined) {
@@ -194,16 +179,16 @@ clearBtn.addEventListener('click', () => reset());
 const decBtn = document.querySelector('.decimal');
 decBtn.addEventListener('click', () => {
     if (num2 === undefined) { //decimal at start
-        console.log('dec1')
+        console.log('dec1');
         addDecimal();
     } //checks for duplicate decimals
     if (num2 !== undefined) {
         if (tempNum.includes('.') === false && toggleResult === false) { //top display
-            console.log('dec2')
+            console.log('dec2');
             addDecimal();
         }
         if (String(result).includes('.') === false && toggleResult === true) { //bottom
-            console.log('dec3')
+            console.log('dec3');
             addDecimal();
         }
     }
@@ -214,14 +199,28 @@ signBtn.addEventListener('click', () => sign());
 
 const checkStrLength = () => {
     if (dTopStr.length >= 19) { //slices top display if reaches the edge
-        dTopStr = dTopStr.slice(-18)
+        dTopStr = dTopStr.slice(-18);
     }
     if (result !== undefined) {
         if (String(result).length >= 12) { //makes bottom display smaller font
-            dBottom.classList.add('small-b-text')
+            dBottom.classList.add('small-b-text');
         }
     }
 }
 
+
+const percent = () => {
+    const result2 = Math.round((num1 / num2) * 100)
+    console.log(result2);
+}
+
+
+const percBtn = document.querySelector('.percent');
+percBtn.addEventListener('click', () => percent());
+
 const dTop = document.querySelector('#dTop');
 const dBottom = document.querySelector('#dBottom');
+const updateTopRow = (string) => {
+    dTopStr = tempStr.concat(' ', string);
+    dTop.textContent = dTopStr;
+}
