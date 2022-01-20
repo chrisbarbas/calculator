@@ -69,19 +69,20 @@ body {
 
 
 button {
-    font-size: 2rem;
+    font-size: 1.9rem;
     font-weight: 700;
     color: #EEE;
     border-radius: 20px;
     border: none;
-    margin: 2px;
-    height: 86px;
-    width: 86px;
+    margin: 4px;
+    height: 83px;
+    width: 83px;
     background: rgb(70, 70, 70);
     background: radial-gradient(circle, rgba(70, 70, 70, 1) 0%, rgba(70, 70, 70, 1) 35%, rgba(62, 62, 62, 1) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 button:hover {
@@ -91,7 +92,7 @@ button:hover {
 }
 
 #large button {
-    width: 180px;
+    width: 176px;
 }
 
 .small-b-text {
