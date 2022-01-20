@@ -2,9 +2,10 @@
 let num1, num2, oper, result;
 let tempStr = '';
 let dTopStr = '';
-let tempNum = ''; 
+let tempNum = '';
 let topDec = ''; //decimal in top display
 let toggleResult = false; //if selecting bottom display
+let minusAsNegative = 0; //if minus sign directly follows an operator
 
 //AC button calls it to clear the global variables
 const reset = () => {
@@ -17,24 +18,24 @@ const reset = () => {
     tempNum = '';
     topDec = '';
     toggleResult = false;
+    minusAsNegative = 0;
     dBottom.textContent = '';
     dTop.textContent = '';
     dBottom.classList.remove('small-b-text')
 }
-
 //functions called in operate()
 const round3 = (t) => Number(Math.round((t) + 'e3') + 'e-3');
 const add = (x, y) => round3(x + y);
 const subtract = (x, y) => round3(x - y);
 const multiply = (x, y) => round3(x * y);
 const divide = (x, y) => round3(x / y);
-const infinity = () => {
+const infinity = () => { //if divided by zero
     result = 'BOZO'
     setTimeout(() => {
         reset()
     }, 2000);
 }
-//triggers on decimal button
+//triggers on decBtn eventListener
 const addDecimal = () => {
     let str = '';
     if (num1 === undefined && num2 === undefined) { //at start
@@ -64,6 +65,34 @@ const addDecimal = () => {
         }
     }
 }
+//triggers on signBtn eventListener
+const sign = () => {
+    let str = '';
+    if (num1 === undefined && num2 === undefined) { //if at start
+        tempNum = `-`;
+        dTopStr = str.concat(' ', '-');
+        dTop.textContent = dTopStr;
+    }
+    if (toggleResult === false) {
+        if (num2 !== undefined) { //top row if no new digit entered
+            if (tempNum === '') {
+                tempNum = `-`;
+                dTopStr = tempStr.concat(' ', '-');
+                dTop.textContent = dTopStr;
+                console.log('green1')
+            } else { //top row if digit already entered
+                tempNum *= -1;
+                dTopStr = tempStr.concat(' ', tempNum);
+                dTop.textContent = dTopStr;
+                console.log('green2')
+            }
+        }
+    }
+    if (toggleResult === true) { //bottom row
+        result *= -1;
+        dBottom.textContent = result;
+    }
+}
 //digit eventListener sent here to update global variables
 const updateNums = (x) => {
     if (toggleResult === false) { //most numbers
@@ -82,6 +111,7 @@ const updateNums = (x) => {
         x = '';
         console.log('green')
     }
+    minusAsNegative = 0;
 }
 
 function operate() {
@@ -133,19 +163,26 @@ const operators = document.querySelectorAll('.operators');
 for (i of operators) {
     i.addEventListener('click', (e) => {
         checkStrLength();
-        if (e.target.id === '=') {
+        if (e.target.id === '=') { // =
             operate();
             toggleResult = true; // toggles false after operate()
         }
-        if (e.target.id !== '=') {
-            operate();
-            // toggleResult = false;
-            oper = e.target.id
-            tempStr = dTopStr.concat(' ', e.target.id);
-            dTop.textContent = tempStr;
-            if (result === undefined) {
-                num1 = tempNum;
-                tempNum = '';
+        if (e.target.id !== '=') { // + - * / 
+            minusAsNegative++;
+            if (minusAsNegative === 2 && e.target.id === '-') {
+                tempNum = '-';
+                dTopStr = tempStr.concat(' ', tempNum);
+                dTop.textContent = dTopStr;
+                --minusAsNegative;
+            } else {
+                operate();
+                oper = e.target.id
+                tempStr = dTopStr.concat(' ', e.target.id);
+                dTop.textContent = tempStr;
+                if (result === undefined) {
+                    num1 = tempNum;
+                    tempNum = '';
+                }
             }
         }
     });
@@ -172,12 +209,15 @@ decBtn.addEventListener('click', () => {
     }
 });
 
+const signBtn = document.querySelector('.sign');
+signBtn.addEventListener('click', () => sign());
+
 const checkStrLength = () => {
     if (dTopStr.length >= 19) { //slices top display if reaches the edge
         dTopStr = dTopStr.slice(-18)
     }
     if (result !== undefined) {
-        if (String(result).length >= 12) { //makes result smaller font
+        if (String(result).length >= 12) { //makes bottom display smaller font
             dBottom.classList.add('small-b-text')
         }
     }
@@ -185,34 +225,3 @@ const checkStrLength = () => {
 
 const dTop = document.querySelector('#dTop');
 const dBottom = document.querySelector('#dBottom');
-
-// const signBtn = document.querySelector('.sign');
-// signBtn.addEventListener('click', () => sign());
-
-// const sign = () => {
-//     toggleSignNew = true;
-//     let str = '';
-//     if (num1 === undefined && num2 === undefined) {
-//         tempNum = `-`;
-//         dTopStr = tempStr.concat(' ', '-');
-//         dTop.textContent = dTopStr;
-//         toggleSign = false;
-//     }
-//     if (num2 !== undefined) {
-//         if (toggleResult === false) {
-//             if (toggleSign === false) {
-//                 tempNum = num2 * -1;
-//                 dTopStr = tempStr.concat(' ', tempNum);
-//                 dTop.textContent = dTopStr;
-//                 console.log('green')
-//                 toggleSign = false;
-//             }
-//             if (toggleSign === true) {
-//                 tempNum = `-${num2}`;
-//                 dTopStr = tempStr.concat(' ', '-');
-//                 dTop.textContent = dTopStr;
-//                 console.log('red')
-//             }
-//         }
-//     }
-// }
