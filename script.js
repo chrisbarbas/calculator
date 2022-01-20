@@ -6,8 +6,8 @@ let tempNum = '';
 let topDec = ''; //decimal in top display
 let toggleResult = false; //if selecting bottom display
 let minusAsNegative = 0; //if minus sign directly follows an operator
+let replaceResult = false; //allows adding decimals to result
 
-//AC button calls it to clear the global variables
 const reset = () => {
     num1 = undefined;
     num2 = undefined;
@@ -19,11 +19,12 @@ const reset = () => {
     topDec = '';
     toggleResult = false;
     minusAsNegative = 0;
+    replaceResult = false;
     dBottom.textContent = '';
     dTop.textContent = '';
     dBottom.classList.remove('small-b-text')
 }
-//functions called in operate()
+
 const round3 = (t) => Number(Math.round((t) + 'e3') + 'e-3');
 const add = (x, y) => round3(x + y);
 const subtract = (x, y) => round3(x - y);
@@ -35,34 +36,33 @@ const infinity = () => { //if divided by zero
         reset()
     }, 2000);
 }
-//triggers on decBtn eventListener
+//decBtn eventListener
 const addDecimal = () => {
     let str = '';
-    if (num1 === undefined && num2 === undefined) { //at start
-        console.log('magenta')
+    replaceResult = false;
+    if (num2 === undefined) { //at start
         tempNum = ('.');
         updateTopRow(tempNum);
     }
     if (num2 !== undefined) {
         if (toggleResult === false) {
             if (tempNum !== '') { //most numbers
-                console.log('teal3')
                 tempNum = str.concat(num2, '.');
                 updateTopRow(tempNum);
             }
             if (tempNum === '') { //if number begins with a decimal, .8
-                console.log('teal')
                 tempNum = ('.');
                 updateTopRow(tempNum);
             }
         }
-        if (toggleResult === true) { //result
+        if (toggleResult === true) { //decimal point to result
+            replaceResult = true;
             result = str.concat(result, '.');
             dBottom.textContent = result;
         }
     }
 }
-//triggers on signBtn eventListener
+//signBtn eventListener
 const sign = () => {
     if (toggleResult === false) {
         if (tempNum === '') { //before unkown number
@@ -82,29 +82,43 @@ const sign = () => {
         dBottom.textContent = result;
     }
 }
+//percBtn eventListener
+const percent = () => {
+    if (toggleResult === false) {
+        if (num1 === undefined && oper === undefined) { //top row at start
+            tempNum = round3(tempNum / 100);
+            updateTopRow(tempNum);
+        }
+        if (oper !== undefined && tempNum !== '') { //top row when there's a previous num
+            tempNum = round3((num1 / 100) * num2);
+            updateTopRow(tempNum);
+        }
+    }
+    if (toggleResult === true) { //bottom row
+        result = round3(result / 100);
+        dBottom.textContent = result;
+    }
+}
 //digit eventListener sent here to update global variables
 const updateNums = (x) => {
     if (toggleResult === false) { //most numbers
         tempNum += x;
         num2 = tempNum;
         updateTopRow(num2);
-        console.log('blue')
     }
     if (toggleResult === true) { //result
-        result += x;
-        topDec += x;
-        dBottom.textContent = result;
-        updateTopRow(` ${num2} + .${topDec}`)
-        x = '';
-        console.log('green');
+        if (replaceResult === true) {
+            result += x;
+            topDec += x;
+            dBottom.textContent = result;
+            updateTopRow(` ${num2} + .${topDec}`)
+            x = '';
+        }
     }
     minusAsNegative = 0;
 }
 
 function operate() {
-    console.log(num1);
-    console.log(num2);
-    console.log(tempNum);
     if (!(num1)) {
         num1 = 0;
     }
@@ -132,6 +146,7 @@ function operate() {
             }
     }
     toggleResult = false;
+    replaceResult === false;
     oper = undefined;
     num1 = result;
     topDec = '';
@@ -177,18 +192,15 @@ const clearBtn = document.querySelector('.clear');
 clearBtn.addEventListener('click', () => reset());
 
 const decBtn = document.querySelector('.decimal');
-decBtn.addEventListener('click', () => {
-    if (num2 === undefined) { //decimal at start
-        console.log('dec1');
+decBtn.addEventListener('click', () => { //checks for duplicate decimals
+    if (num2 === undefined) { // start
         addDecimal();
-    } //checks for duplicate decimals
+    }
     if (num2 !== undefined) {
         if (tempNum.includes('.') === false && toggleResult === false) { //top display
-            console.log('dec2');
             addDecimal();
         }
         if (String(result).includes('.') === false && toggleResult === true) { //bottom
-            console.log('dec3');
             addDecimal();
         }
     }
@@ -196,6 +208,9 @@ decBtn.addEventListener('click', () => {
 
 const signBtn = document.querySelector('.sign');
 signBtn.addEventListener('click', () => sign());
+
+const percBtn = document.querySelector('.percent');
+percBtn.addEventListener('click', () => percent());
 
 const checkStrLength = () => {
     if (dTopStr.length >= 19) { //slices top display if reaches the edge
@@ -207,17 +222,7 @@ const checkStrLength = () => {
         }
     }
 }
-
-
-const percent = () => {
-    const result2 = Math.round((num1 / num2) * 100)
-    console.log(result2);
-}
-
-
-const percBtn = document.querySelector('.percent');
-percBtn.addEventListener('click', () => percent());
-
+//top and bottom displays
 const dTop = document.querySelector('#dTop');
 const dBottom = document.querySelector('#dBottom');
 const updateTopRow = (string) => {
