@@ -6,34 +6,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
-    <link rel="stylesheet" href="./styles/style.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <button class="dark-mode-toggle" aria-label="toggle dark mode"><i class="material-icons moon">
-                        nightlight_round
-                    </i> <i class="material-icons sun">
-                        light_mode
-                    </i>
-                </button>
-            
-        </header>
-        <main>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, animi porro veritatis ipsum at inventore,
-                vitae quidem, accusantium ex obcaecati et ut iusto esse ratione saepe. Non aspernatur rem odio.</p>
-        </main>
-        <footer>
-            <a href="https://www.theodinproject.com/">the odin project | </a>
-            <a href="https://github.com/chrisbarbas"><img src="./images/github-icon.svg" alt="github logo">
-                chrisbarbas</a>
-        </footer>
+        <div class="display">
+            <div id="dTop" class="display-top"></div>
+            <div id="dBottom" class="display-bottom"></div>
+        </div>
+        <div class="button-container">
+            <button class="clear" value="clear" id="clear">AC</button>
+            <button class="sign" value="sign" id="sign">+/-</button>
+            <button class="percent" value="percent" id="percent">%</button>
+            <button class="operators" value="divide" id="/">÷</button>
+            <button class="digits" value="7" id="7">7</button>
+            <button class="digits" value="8" id="8">8</button>
+            <button class="digits" value="9" id="9">9</button>
+            <button class="operators" value="multiply" id="*">x</button>
+            <button class="digits" value="4" id="4">4</button>
+            <button class="digits" value="5" id="5">5</button>
+            <button class="digits" value="6" id="6">6</button>
+            <button class="operators" value="subtract" id="-">-</button>
+            <button class="digits" value="1" id="1">1</button>
+            <button class="digits" value="2" id="2">2</button>
+            <button class="digits" value="3" id="3">3</button>
+            <button class="operators" value="add" id="+">+</button>
+            <button class="digits" value="0" id="0">0</button>
+            <button class="decimal" value="decimal" id="decimal">.</button>
+            <span id="large"><button class="operators" value="equals" id="=">=</button></span>
+        </div>
     </div>
-    <!-- -->
+    <div class="footer">
+        The Odin Project | github/chrisbarbas
+    </div>
+    <!--  -->
     <script src="script.js"></script>
-    <script src="darkmode.js"></script>
 </body>
 
 </html>
